@@ -248,12 +248,14 @@
             background: rgba(255, 255, 255, 0.02);
             border: 1px solid rgba(255, 255, 255, 0.03);
             border-radius: 14px;
-            padding: 0.8rem 1.2rem;
+            padding: 0.6rem 1rem;
             display: flex;
             align-items: center;
             justify-content: space-between;
             transition: all 0.3s ease;
-            margin-bottom: 0.5rem;
+            margin-bottom: 0.4rem;
+            gap: 0.5rem;
+            flex-wrap: wrap;
         }
 
         .history-item:hover {
@@ -261,29 +263,49 @@
             border-color: rgba(247, 224, 94, 0.08);
         }
 
+        .history-item .h-letter {
+            font-weight: 800;
+            font-size: 0.85rem;
+            color: #f7e05e;
+            background: rgba(247, 224, 94, 0.08);
+            min-width: 34px;
+            height: 34px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            flex-shrink: 0;
+            border: 1px solid rgba(247, 224, 94, 0.1);
+            font-family: 'Montserrat', sans-serif;
+            padding: 0 2px;
+        }
+
         .history-item .h-name {
             font-weight: 600;
-            font-size: clamp(0.8rem, 1vw, 0.9rem);
+            font-size: clamp(0.7rem, 0.9vw, 0.85rem);
             color: #e8f0ff;
             letter-spacing: 0.02em;
+            flex: 1;
+            min-width: 80px;
         }
 
         .history-item .h-college {
-            font-size: clamp(0.6rem, 0.8vw, 0.7rem);
+            font-size: clamp(0.55rem, 0.7vw, 0.7rem);
             color: #8ab4f8;
             letter-spacing: 0.04em;
             background: rgba(138, 180, 248, 0.06);
-            padding: 0.15rem 0.8rem;
+            padding: 0.1rem 0.6rem;
             border-radius: 30px;
+            white-space: nowrap;
         }
 
         .history-item .h-number {
             font-weight: 700;
-            font-size: 0.75rem;
-            color: #f7e05e;
-            background: rgba(247, 224, 94, 0.06);
-            width: 28px;
-            height: 28px;
+            font-size: 0.65rem;
+            color: #6a7a9a;
+            background: rgba(255, 255, 255, 0.03);
+            width: 24px;
+            height: 24px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -299,7 +321,7 @@
             letter-spacing: 0.04em;
         }
 
-        /* Full‑screen selection overlay (no images, all caps) */
+        /* Full‑screen selection overlay */
         .selection-overlay {
             position: fixed;
             inset: 0;
@@ -419,6 +441,34 @@
             letter-spacing: 0.1em;
         }
 
+        /* CODE LETTER – displayed prominently at the bottom of the overlay */
+        .selection-card .code-letter {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 900;
+            font-size: clamp(3rem, 10vw, 6rem);
+            letter-spacing: 0.08em;
+            color: #f7e05e;
+            background: rgba(247, 224, 94, 0.04);
+            border: 1px solid rgba(247, 224, 94, 0.06);
+            border-radius: 60px;
+            padding: 0.1rem 2rem;
+            display: inline-block;
+            margin-top: 1.2rem;
+            text-shadow: 0 0 60px rgba(247, 224, 94, 0.08);
+            line-height: 1.2;
+        }
+
+        .selection-card .code-label {
+            font-family: 'Inter', sans-serif;
+            font-weight: 400;
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            color: #4a5a7a;
+            display: block;
+            margin-bottom: 0.2rem;
+        }
+
         .selection-card .divider-line {
             width: 80px;
             height: 2px;
@@ -436,6 +486,10 @@
             }
             .selection-card {
                 padding: 1.5rem;
+            }
+            .selection-card .code-letter {
+                font-size: 3.2rem;
+                padding: 0.05rem 1.5rem;
             }
         }
 
@@ -487,7 +541,7 @@
             }
         }
 
-        /* extra tiny helper for wheel text */
+        /* tiny helper for wheel text */
         .wheel-text-tiny {
             font-size: 7px !important;
             letter-spacing: 0.02em;
@@ -511,6 +565,11 @@
             <div class="selected-name" id="selectedNameDisplay">—</div>
             <div class="selected-college" id="selectedCollegeDisplay">—</div>
             <div class="selected-id" id="selectedIdDisplay"># —</div>
+            <!-- CODE LETTER – bottom of overlay -->
+            <div style="margin-top:1.5rem;">
+                <span class="code-label"><i class="fas fa-tag mr-1"></i> code letter</span>
+                <div class="code-letter" id="selectedCodeLetter">—</div>
+            </div>
             <div class="divider-line"></div>
         </div>
     </div>
@@ -627,9 +686,9 @@
             { name: "MUHAMMED LABEEB CK", college: "DH CHEMMAD", id: 23 },
             { name: "SALMAN AHMAD VH", college: "DH CHEMMAD", id: 24 },
             // DUIDC THOOTHA
-            { name: "1", college: "DUIDC THOOTHA", id: 25 },
-            { name: "2", college: "DUIDC THOOTHA", id: 26 },
-            { name: "3", college: "DUIDC THOOTHA", id: 27 }
+            { name: "MUHAMMED SHAHIL", college: "DUIDC THOOTHA", id: 25 },
+            { name: "MUHAMMED NASIF", college: "DUIDC THOOTHA", id: 26 },
+            { name: "MUHAMMED RASHID", college: "DUIDC THOOTHA", id: 27 }
         ];
 
         // ============================================================
@@ -673,6 +732,24 @@
             { main: "#a770ef", alt: "#cf8bf3" },
             { main: "#00cdac", alt: "#02aab0" }
         ];
+
+        // ============================================================
+        //  CODE LETTER GENERATOR – A–Z, then AB for 27th
+        // ============================================================
+        function getCodeLetter(index) {
+            // index is 0‑based: 0→A, 1→B, … 25→Z, 26→AB
+            if (index < 0) return '?';
+            if (index < 26) {
+                return String.fromCharCode(65 + index); // A–Z
+            }
+            if (index === 26) {
+                return 'AB'; // 27th participant → AB
+            }
+            // fallback for beyond 27 (just in case)
+            const first = Math.floor(index / 26) - 1;
+            const second = index % 26;
+            return String.fromCharCode(65 + first) + String.fromCharCode(65 + second);
+        }
 
         // ============================================================
         //  CANVAS SETUP
@@ -725,11 +802,8 @@
             }
 
             const slice = (2 * Math.PI) / available.length;
-
-            // ── VERY SMALL font at the TOP (outer edge) of each slice ──
-            // font size scales with radius but stays tiny
-            const nameFontSize = Math.min(radius * 0.035, 9);
-            const textRadius = radius * 0.84; // near the rim
+            const nameFontSize = Math.min(radius * 0.032, 8.5);
+            const textRadius = radius * 0.84;
 
             for (let i = 0; i < available.length; i++) {
                 const start = spinAngle + i * slice;
@@ -737,7 +811,6 @@
                 const ci = i % colors.length;
                 const c = colors[ci];
 
-                // ── slice fill ──
                 const grad = ctx.createRadialGradient(cx, cy, 0, cx, cy, radius);
                 grad.addColorStop(0, c.alt);
                 grad.addColorStop(1, c.main);
@@ -748,7 +821,6 @@
                 ctx.fillStyle = grad;
                 ctx.fill();
 
-                // border
                 ctx.beginPath();
                 ctx.moveTo(cx, cy);
                 ctx.arc(cx, cy, radius, start, end);
@@ -757,7 +829,6 @@
                 ctx.lineWidth = 1.2;
                 ctx.stroke();
 
-                // divider
                 ctx.beginPath();
                 ctx.moveTo(cx, cy);
                 ctx.lineTo(cx + Math.cos(start) * radius, cy + Math.sin(start) * radius);
@@ -765,7 +836,7 @@
                 ctx.lineWidth = 1.2;
                 ctx.stroke();
 
-                // ── COLLEGE NAME at TOP (outer edge) ──
+                // College name at outer edge
                 ctx.save();
                 ctx.translate(cx, cy);
                 ctx.rotate(start + slice / 2);
@@ -785,14 +856,12 @@
                 ctx.restore();
             }
 
-            // outer ring
             ctx.beginPath();
             ctx.arc(cx, cy, radius, 0, Math.PI * 2);
             ctx.strokeStyle = 'rgba(255,255,255,0.04)';
             ctx.lineWidth = 2;
             ctx.stroke();
 
-            // inner circle (clean center)
             ctx.beginPath();
             ctx.arc(cx, cy, radius * 0.12, 0, Math.PI * 2);
             ctx.fillStyle = 'rgba(11,14,26,0.5)';
@@ -841,8 +910,12 @@
                     selected.push(chosen);
                     currentSelectionId = chosen.id;
 
-                    showSelection(chosen);
-                    updateHistory(chosen);
+                    // Compute code letter (0‑based index → A=0, B=1, …, Z=25, AB=26)
+                    const letterIndex = selected.length - 1;
+                    const codeLetter = getCodeLetter(letterIndex);
+
+                    showSelection(chosen, codeLetter);
+                    updateHistory(chosen, codeLetter);
                     updateRemaining();
                     playWinSound();
                     triggerConfetti();
@@ -859,18 +932,20 @@
         }
 
         // ============================================================
-        //  SHOW FULL-SCREEN SELECTION
+        //  SHOW FULL-SCREEN SELECTION (with code letter)
         // ============================================================
-        function showSelection(student) {
+        function showSelection(student, codeLetter) {
             const overlay = document.getElementById('selectionOverlay');
             const card = document.getElementById('selectionCard');
             const nameEl = document.getElementById('selectedNameDisplay');
             const collegeEl = document.getElementById('selectedCollegeDisplay');
             const idEl = document.getElementById('selectedIdDisplay');
+            const letterEl = document.getElementById('selectedCodeLetter');
 
             nameEl.textContent = student.name.toUpperCase();
             collegeEl.textContent = student.college.toUpperCase();
             idEl.textContent = '# ' + student.id;
+            letterEl.textContent = codeLetter;
 
             card.style.animation = 'none';
             void card.offsetWidth;
@@ -884,15 +959,16 @@
         }
 
         // ============================================================
-        //  HISTORY
+        //  HISTORY (with code letter badge)
         // ============================================================
-        function updateHistory(student) {
+        function updateHistory(student, codeLetter) {
             const list = document.getElementById('historyList');
             const empty = document.getElementById('historyEmpty');
             if (empty) empty.style.display = 'none';
 
             const now = new Date();
             const time = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            const number = selected.length;
 
             const div = document.createElement('div');
             div.className = 'history-item';
@@ -900,13 +976,14 @@
             div.style.transform = 'translateY(12px)';
 
             div.innerHTML = `
-                        <div class="flex items-center gap-3 min-w-0">
+                        <div class="flex items-center gap-2 min-w-0 flex-1">
+                            <span class="h-letter">${codeLetter}</span>
                             <span class="h-name">${student.name.toUpperCase()}</span>
                             <span class="h-college">${student.college.toUpperCase()}</span>
                         </div>
-                        <div class="flex items-center gap-3 flex-shrink-0">
+                        <div class="flex items-center gap-2 flex-shrink-0">
                             <span class="text-xs text-blue-300/40">${time}</span>
-                            <span class="h-number">${selected.length}</span>
+                            <span class="h-number">${number}</span>
                         </div>
                     `;
 
