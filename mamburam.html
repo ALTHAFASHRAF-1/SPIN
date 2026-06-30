@@ -277,13 +277,30 @@
             border-radius: 30px;
         }
 
+        /* Letter badge in history */
+        .history-item .h-letter {
+            font-weight: 800;
+            font-size: 0.85rem;
+            color: #f7e05e;
+            background: rgba(247, 224, 94, 0.08);
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            flex-shrink: 0;
+            border: 1px solid rgba(247, 224, 94, 0.1);
+            font-family: 'Montserrat', sans-serif;
+        }
+
         .history-item .h-number {
             font-weight: 700;
-            font-size: 0.75rem;
-            color: #f7e05e;
-            background: rgba(247, 224, 94, 0.06);
-            width: 28px;
-            height: 28px;
+            font-size: 0.7rem;
+            color: #6a7a9a;
+            background: rgba(255, 255, 255, 0.03);
+            width: 26px;
+            height: 26px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -419,6 +436,34 @@
             letter-spacing: 0.1em;
         }
 
+        /* CODE LETTER – displayed prominently at the bottom of the overlay */
+        .selection-card .code-letter {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 900;
+            font-size: clamp(3rem, 10vw, 6rem);
+            letter-spacing: 0.08em;
+            color: #f7e05e;
+            background: rgba(247, 224, 94, 0.04);
+            border: 1px solid rgba(247, 224, 94, 0.06);
+            border-radius: 60px;
+            padding: 0.1rem 2rem;
+            display: inline-block;
+            margin-top: 1.2rem;
+            text-shadow: 0 0 60px rgba(247, 224, 94, 0.08);
+            line-height: 1.2;
+        }
+
+        .selection-card .code-label {
+            font-family: 'Inter', sans-serif;
+            font-weight: 400;
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            color: #4a5a7a;
+            display: block;
+            margin-bottom: 0.2rem;
+        }
+
         .selection-card .divider-line {
             width: 80px;
             height: 2px;
@@ -436,6 +481,10 @@
             }
             .selection-card {
                 padding: 1.5rem;
+            }
+            .selection-card .code-letter {
+                font-size: 3.2rem;
+                padding: 0.05rem 1.5rem;
             }
         }
 
@@ -505,6 +554,11 @@
             <div class="selected-name" id="selectedNameDisplay">—</div>
             <div class="selected-college" id="selectedCollegeDisplay">—</div>
             <div class="selected-id" id="selectedIdDisplay"># —</div>
+            <!-- CODE LETTER – bottom of overlay -->
+            <div style="margin-top:1.5rem;">
+                <span class="code-label"><i class="fas fa-tag mr-1"></i> code letter</span>
+                <div class="code-letter" id="selectedCodeLetter">—</div>
+            </div>
             <div class="divider-line"></div>
         </div>
     </div>
@@ -782,6 +836,15 @@
         }
 
         // ============================================================
+        //  HELPERS: get code letter from selection index
+        // ============================================================
+        function getCodeLetter(index) {
+            // index is 0-based → A=0, B=1, ... O=14
+            if (index < 0 || index > 14) return '?';
+            return String.fromCharCode(65 + index); // 65 = 'A'
+        }
+
+        // ============================================================
         //  SPIN
         // ============================================================
         function spin() {
@@ -820,8 +883,12 @@
                     selected.push(chosen);
                     currentSelectionId = chosen.id;
 
-                    showSelection(chosen);
-                    updateHistory(chosen);
+                    // Compute code letter based on selection order (1-based → A=1)
+                    const letterIndex = selected.length - 1; // 0-based
+                    const codeLetter = getCodeLetter(letterIndex);
+
+                    showSelection(chosen, codeLetter);
+                    updateHistory(chosen, codeLetter);
                     updateRemaining();
                     playWinSound();
                     triggerConfetti();
@@ -838,18 +905,20 @@
         }
 
         // ============================================================
-        //  SHOW FULL-SCREEN SELECTION
+        //  SHOW FULL-SCREEN SELECTION (with code letter)
         // ============================================================
-        function showSelection(student) {
+        function showSelection(student, codeLetter) {
             const overlay = document.getElementById('selectionOverlay');
             const card = document.getElementById('selectionCard');
             const nameEl = document.getElementById('selectedNameDisplay');
             const collegeEl = document.getElementById('selectedCollegeDisplay');
             const idEl = document.getElementById('selectedIdDisplay');
+            const letterEl = document.getElementById('selectedCodeLetter');
 
             nameEl.textContent = student.name.toUpperCase();
             collegeEl.textContent = student.college.toUpperCase();
             idEl.textContent = '# ' + student.id;
+            letterEl.textContent = codeLetter;
 
             card.style.animation = 'none';
             void card.offsetWidth;
@@ -863,15 +932,16 @@
         }
 
         // ============================================================
-        //  HISTORY
+        //  HISTORY (with code letter)
         // ============================================================
-        function updateHistory(student) {
+        function updateHistory(student, codeLetter) {
             const list = document.getElementById('historyList');
             const empty = document.getElementById('historyEmpty');
             if (empty) empty.style.display = 'none';
 
             const now = new Date();
             const time = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            const number = selected.length;
 
             const div = document.createElement('div');
             div.className = 'history-item';
@@ -880,12 +950,13 @@
 
             div.innerHTML = `
                         <div class="flex items-center gap-3 min-w-0">
+                            <span class="h-letter">${codeLetter}</span>
                             <span class="h-name">${student.name.toUpperCase()}</span>
                             <span class="h-college">${student.college.toUpperCase()}</span>
                         </div>
                         <div class="flex items-center gap-3 flex-shrink-0">
                             <span class="text-xs text-blue-300/40">${time}</span>
-                            <span class="h-number">${selected.length}</span>
+                            <span class="h-number">${number}</span>
                         </div>
                     `;
 
